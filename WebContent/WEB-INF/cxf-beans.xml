@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+	 
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	
+	<jaxws:endpoint 
+        id="Tasks"
+        implementor="mx.nic.task.TaskServer"
+        address="/">
+
+			<jaxws:properties>
+				<entry key="ws-security.ut.validator">
+					<bean class="mx.nic.task.ServerUsernameTokenValidator" />
+				</entry>
+			</jaxws:properties>
+			
+			
+			<jaxws:inInterceptors>
+				<bean class="org.apache.cxf.binding.soap.saaj.SAAJInInterceptor" />
+				<ref bean="taskServiceInterceptor" />
+			</jaxws:inInterceptors>
+				
+     			 
+        	<jaxws:features>
+				<bean class="org.apache.cxf.feature.LoggingFeature" />
+			</jaxws:features> 
+			
+    </jaxws:endpoint>
+    
+	<bean id="taskServiceInterceptor"   class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	 <constructor-arg>                              
+	 <map>
+	    <entry key="action" value="UsernameToken" />
+	    <entry key="passwordType" value="PasswordText" />
+	  </map>          
+	</constructor-arg>
+	</bean>
+	
+</beans>
