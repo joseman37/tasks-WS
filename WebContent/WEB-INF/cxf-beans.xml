@@ -11,8 +11,7 @@
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 	
 	<jaxws:endpoint 
-        id="Tasks"
-        implementor="mx.nic.task.TaskServer"
+        id="Tasks" implementor="mx.nic.task.TaskServer"
         address="/">
 
 			<jaxws:properties>

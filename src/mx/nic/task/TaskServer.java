@@ -7,10 +7,12 @@ import javax.jws.WebService;
 
 import mx.nic.task.exception.OperationFailed;
 
-
-
-//@WebService(targetNamespace = "http://notes.jmgs.mx/", endpointInterface = "mx.jmgs.notes.NotesSEI", portName = "notesPort", serviceName = "notesService")
-@WebService(endpointInterface = "mx.nic.task.TaskSEI")
+/**
+ * Clase que implementa el WS Tasks.
+ * @author mgonzalez
+ *
+ */
+@WebService(endpointInterface = "mx.nic.task.TaskSEI", portName = "TasksPort", serviceName = "TasksService")
 public class TaskServer implements TaskSEI {
 	
 	

@@ -7,9 +7,10 @@ import org.apache.ws.security.validate.Credential;
 import org.apache.ws.security.validate.Validator;
 
 /**
+ * Clase que Valida el usuario y Contraseña ingresados en el header de WS-Security de tipo UsernameToken.
  * 
- * @author Jose
- *
+ * @author mgonzalez
+ * 
  */
 public class ServerUsernameTokenValidator implements Validator {
 
@@ -21,10 +22,11 @@ public class ServerUsernameTokenValidator implements Validator {
 		String username = usernameToken.getName();
 		String password = usernameToken.getPassword();
 
-		// hash the password
+		// Hacer el hash del password similiar a cómo se realizó en DB.
 
 		if (!username.equals("jose") || !password.equals("pass")) {
-			throw new WSSecurityException(WSSecurityException.FAILED_AUTHENTICATION);
+			throw new WSSecurityException(
+					WSSecurityException.FAILED_AUTHENTICATION);
 		}
 
 		return credential;

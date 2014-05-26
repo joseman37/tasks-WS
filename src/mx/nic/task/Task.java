@@ -4,6 +4,11 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Pojo que contiene la información de la tarea.
+ * @author mgonzalez
+ *
+ */
 @XmlRootElement(name = "Tarea")
 public class Task {
 	

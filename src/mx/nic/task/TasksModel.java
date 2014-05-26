@@ -3,6 +3,12 @@ package mx.nic.task;
 import java.util.Date;
 import java.util.Hashtable;
 
+/**
+ * Clase que tiene los métodos de BI de las tareas.
+ * 
+ * @author mgonzalez
+ *
+ */
 public class TasksModel {
 	
 	private static Hashtable<Integer, Task> TASKS = generateTasks();

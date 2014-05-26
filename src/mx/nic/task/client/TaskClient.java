@@ -12,31 +12,48 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 
 import mx.nic.task.Task;
 import mx.nic.task.TaskSEI;
+import mx.nic.task.Utils;
 import mx.nic.task.exception.OperationFailed;
 
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.endpoint.Endpoint;
+import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSPasswordCallback;
 import org.apache.ws.security.handler.WSHandlerConstants;
 
-// CXF JAX-WS Client / Consuming Web Services With CXF
-
+// 
+/**
+ * Ejemplo de un cliente de un servicio CXF JAX-WS. Consumo de servicios web con CXF
+ * 
+ * @author mgonzalez
+ *
+ */
 public final class TaskClient {
+	
+	private static final String address = "http://localhost:8080/tasks-WS/services?wsdl";
+	private static final String secureAddress = "https://localhost:8443/tasks-WS/services?wsdl";
+	
+	private static final boolean secureConnection = true;
 
 	public static void main(String args[]) {
 
 		JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
 
 		factory.setServiceClass(TaskSEI.class);
-		factory.setAddress("http://localhost:8080/tasks-WS/services?wsdl");
+		factory.setAddress(secureConnection ? secureAddress : address);
 		factory.getInInterceptors().add(new LoggingInInterceptor());
 		factory.getOutInterceptors().add(new LoggingOutInterceptor());
 		TaskSEI client = (TaskSEI) factory.create();
 		
-		addSecurity(client);
+		if(secureConnection) {
+			addSecurity(client);
+		}
 		
 		Task task = new Task(8, "Task 8", "Task", new Date());
 		try {
@@ -61,10 +78,21 @@ public final class TaskClient {
 
 		System.exit(0);
 	}
-
+	
+	/**
+	 * Añade WS-Security de tipo usernameToken al cliente. También añade el
+	 * conducto TLS.
+	 * 
+	 * @param proxyClient
+	 */
 	private static void addSecurity(TaskSEI proxyClient) {
-		org.apache.cxf.endpoint.Client client = org.apache.cxf.frontend.ClientProxy.getClient(proxyClient);
-		org.apache.cxf.endpoint.Endpoint cxfEndpoint = client.getEndpoint();
+		Client client = ClientProxy.getClient(proxyClient);
+		
+		HTTPConduit http = (HTTPConduit) client.getConduit();
+		http.setTlsClientParameters(Utils.getTlsParams());
+
+		
+		Endpoint cxfEndpoint = client.getEndpoint();
 		Map<String, Object> outProps = new HashMap<String, Object>();
 		outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
 		// Specify our username
@@ -78,16 +106,21 @@ public final class TaskClient {
 
 	}
 	
+	/**
+	 * Clase que obtiene el password de los usuarios.
+	 * 
+	 * @author Jose
+	 * 
+	 */
 	public static class ClientPasswordHandler implements CallbackHandler {
 
 		@Override
-		public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+		public void handle(Callback[] callbacks) throws IOException,
+				UnsupportedCallbackException {
 
 			WSPasswordCallback pc = (WSPasswordCallback) callbacks[0];
 
-			// set the password for our message.
-			// we expect that all current users have this password as this eases
-			// unittesting
+			// Se espera que todos los usuarios actuales tengan esta contraseña
 			pc.setPassword("pass");
 		}
 
