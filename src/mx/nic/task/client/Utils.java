@@ -1,4 +1,4 @@
-package mx.nic.task;
+package mx.nic.task.client;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,42 +37,33 @@ public final class Utils {
 		try {
 			tlsParams = new TLSClientParameters();
 
-			// set up the keystore and password
 			KeyStore keyStore = KeyStore.getInstance("JKS");
-			// -- provide your password
+			// password
 			String trustpass = "barbacoas";
-			// -- provide your truststore
-			File truststore = new File(
-					"C:\\\\tomcat\\apache-tomcat-7.0.53\\SSL\\Mykeystore");
-			keyStore.load(new FileInputStream(truststore),
-					trustpass.toCharArray());
+			// truststore
+			File truststore = new File("C:\\\\tomcat\\apache-tomcat-7.0.53\\SSL\\Mykeystore");
+			keyStore.load(new FileInputStream(truststore), trustpass.toCharArray());
 
-			// should JSEE omit checking if the host name specified in the
-			// URL matches that of the Common Name (CN) on the server's
-			// certificate.
+			// settear en true sólo en producción
 			tlsParams.setDisableCNCheck(true);
 
-			// set the SSL protocol
+			// protocolo SSL
 			tlsParams.setSecureSocketProtocol("TLS");
 
-			// set the trust store
-			// (decides whether credentials presented by a peer should be
-			// accepted)
-			TrustManagerFactory trustFactory = TrustManagerFactory
-					.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+			// trust store
+			TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 			trustFactory.init(keyStore);
 			TrustManager[] tm = trustFactory.getTrustManagers();
 			tlsParams.setTrustManagers(tm);
 
-			// set our key store
-			// (used to authenticate the local SSLSocket to its peer)
-			KeyManagerFactory keyFactory = KeyManagerFactory
-					.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+			// key store
+			// (usado para autenticar el SSLSocket)
+			KeyManagerFactory keyFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 			keyFactory.init(keyStore, trustpass.toCharArray());
 			KeyManager[] km = keyFactory.getKeyManagers();
 			tlsParams.setKeyManagers(km);
 
-			// set all the needed include & exclude cipher filters
+			// establecer todos los filtros de cifrado
 			FiltersType filter = new FiltersType();
 			filter.getInclude().add(".*_WITH_3DES_.*");
 			filter.getInclude().add(".*_EXPORT_.*");

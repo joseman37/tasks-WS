@@ -12,7 +12,6 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 
 import mx.nic.task.Task;
 import mx.nic.task.TaskSEI;
-import mx.nic.task.Utils;
 import mx.nic.task.exception.OperationFailed;
 
 import org.apache.cxf.endpoint.Client;
@@ -87,20 +86,19 @@ public final class TaskClient {
 	 */
 	private static void addSecurity(TaskSEI proxyClient) {
 		Client client = ClientProxy.getClient(proxyClient);
-		
+
 		HTTPConduit http = (HTTPConduit) client.getConduit();
 		http.setTlsClientParameters(Utils.getTlsParams());
 
-		
 		Endpoint cxfEndpoint = client.getEndpoint();
 		Map<String, Object> outProps = new HashMap<String, Object>();
 		outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
-		// Specify our username
+		// Se especifica el nombre de usuario
 		outProps.put(WSHandlerConstants.USER, "jose");
-		// Password type : plain text
+		// Tipo de password : plain text
 		outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
-		// Callback used to retrieve password for given user.
-		 outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS, ClientPasswordHandler.class.getName());
+		// Callback usado para obtener el password de usuario.
+		outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS, ClientPasswordHandler.class.getName());
 		WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);
 		cxfEndpoint.getOutInterceptors().add(wssOut);
 
