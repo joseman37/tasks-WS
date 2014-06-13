@@ -30,13 +30,13 @@
 							<sp:Basic128 />
 						</wsp:Policy>
 					</sp:AlgorithmSuite>
+					 <sp:Layout>
+					  	<wsp:Policy>
+							<sp:Lax />
+						</wsp:Policy>
+					 </sp:Layout>
                  </wsp:Policy>
               </sp:TransportBinding>
-              <sp:Layout>
-			  	<wsp:Policy>
-					<sp:Lax />
-				</wsp:Policy>
-			  </sp:Layout>
 		</wsp:All>
 	</wsp:ExactlyOne>
 </wsp:Policy>
