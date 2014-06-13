@@ -3,16 +3,26 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:jaxws="http://cxf.apache.org/jaxws"
 	xmlns:soap="http://cxf.apache.org/bindings/soap" 
+	xmlns:cxf="http://cxf.apache.org/core"
+	xmlns:p="http://cxf.apache.org/policy"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://cxf.apache.org/bindings/soap
 	http://cxf.apache.org/schemas/configuration/soap.xsd
+	http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+	http://cxf.apache.org/policy http://cxf.apache.org/schemas/policy.xsd
 	http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 	 
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/> 
+	
+	<cxf:bus>
+		<cxf:features>
+			<p:policies enabled="false" />
+		</cxf:features>
+	</cxf:bus>
 	
 	<jaxws:endpoint 
         id="Tasks" implementor="mx.nic.task.TaskServer" publishedEndpointUrl="https://localhost:8443/tasks-WS/services"
@@ -24,13 +34,11 @@
 				</entry>
 			</jaxws:properties>
 			
-			
 			<jaxws:inInterceptors>
 				<ref bean="taskServiceInterceptor" />
 				<!--  <bean class="org.apache.cxf.binding.soap.saaj.SAAJInInterceptor" />  -->
 			</jaxws:inInterceptors>
-				
-     			 
+			  
         	<jaxws:features>
 				<bean class="org.apache.cxf.feature.LoggingFeature" />
 			</jaxws:features> 
