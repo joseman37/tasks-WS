@@ -7,6 +7,7 @@ import javax.jws.WebService;
 
 import org.apache.cxf.annotations.Policies;
 import org.apache.cxf.annotations.Policy;
+import org.apache.cxf.annotations.Policy.Placement;
 
 import mx.nic.task.exception.OperationFailed;
 
@@ -16,7 +17,7 @@ import mx.nic.task.exception.OperationFailed;
  *
  */
 @Policies({ 
-    @Policy(uri = "/META-INF/policies/SecurityPolicy.xml") 
+    @Policy(uri = "/META-INF/policies/SecurityPolicy.xml", placement = Placement.BINDING) 
 })
 @WebService(endpointInterface = "mx.nic.task.TaskSEI", portName = "TasksPort", serviceName = "TasksService")
 public class TaskServer implements TaskSEI {
